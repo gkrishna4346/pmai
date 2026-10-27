@@ -199,6 +199,17 @@
 </div>
 
 <script>
+// Parse a fetch response as JSON, but fail with a readable message if the server
+// (or Render's gateway) sent back an HTML error page instead.
+async function readJson(res){
+  const raw = await res.text();
+  try { return JSON.parse(raw); }
+  catch(e){
+    throw new Error('The server sent an unexpected response (status ' + res.status +
+      '). It may be waking up or timed out - please wait a few seconds and try again.');
+  }
+}
+
 const fileInput = document.getElementById('fileInput');
 const uploadCard = document.getElementById('uploadCard');
 const uploadText = document.getElementById('uploadText');
@@ -246,7 +257,7 @@ fileInput.addEventListener('change', async () => {
 
   try{
     const res = await fetch('/api/extract', { method: 'POST', body: formData });
-    const data = await res.json();
+    const data = await readJson(res);
     if(!res.ok) throw new Error(data.error || 'Could not read this file.');
 
     fullText = data.text;
@@ -279,7 +290,7 @@ buildKbBtn.addEventListener('click', async () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ text: fullText })
     });
-    const data = await res.json();
+    const data = await readJson(res);
     if(!res.ok) throw new Error(data.error || 'Could not identify domain.');
 
     currentDomain = data.domain;
@@ -312,7 +323,7 @@ async function handleQuery(){
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ text: fullText, query: q, domain: currentDomain })
     });
-    const data = await res.json();
+    const data = await readJson(res);
     if(!res.ok) throw new Error(data.error || 'Something went wrong.');
 
     if(data.found === false){

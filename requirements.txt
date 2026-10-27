@@ -5,4 +5,5 @@ scikit-learn>=1.4
 anthropic>=0.34
 google-generativeai>=0.8
 huggingface_hub>=0.24
+openai>=1.30
 gunicorn>=22.0
