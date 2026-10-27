@@ -84,11 +84,11 @@ SAMBANOVA_API_KEY = _clean_key("SAMBANOVA_API_KEY")
 ANTHROPIC_MODEL = os.getenv("ANTHROPIC_MODEL", "claude-sonnet-5")
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.8-flash")
 HF_MODEL = os.getenv("HF_MODEL", "meta-llama/Llama-3.3-70B-Instruct")
-GROQ_MODEL = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
+GROQ_MODEL = os.getenv("GROQ_MODEL", "openai/gpt-oss-120b")
 SAMBANOVA_MODEL = os.getenv("SAMBANOVA_MODEL", "Meta-Llama-3.3-70B-Instruct")
 
 # Max seconds to wait on any single provider before falling through to the next.
-PROVIDER_TIMEOUT = _env_int("PROVIDER_TIMEOUT", 20)
+PROVIDER_TIMEOUT = _env_int("PROVIDER_TIMEOUT", 40)
 # Upload and text limits keep the server within a small (free-tier) memory budget.
 MAX_UPLOAD_MB = _env_int("MAX_UPLOAD_MB", 25)
 MAX_TEXT_CHARS = _env_int("MAX_TEXT_CHARS", 400_000)
