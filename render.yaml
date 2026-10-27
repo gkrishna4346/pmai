@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: paper-mind-ai
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      # Set ONE of these three in the Render dashboard after first deploy —
+      # "sync: false" means Render will prompt you to type the value in
+      # manually rather than storing it in this file / your git repo.
+      - key: HF_API_KEY
+        sync: false
+      - key: HF_MODEL
+        value: meta-llama/Llama-3.3-70B-Instruct
+      - key: GOOGLE_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-2.0-flash
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: ANTHROPIC_MODEL
+        value: claude-sonnet-5
+      - key: LLM_PROVIDER
+        sync: false

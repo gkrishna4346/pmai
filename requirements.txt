@@ -1,0 +1,8 @@
+flask>=3.0
+python-dotenv>=1.0
+pypdf>=4.2
+scikit-learn>=1.4
+anthropic>=0.34
+google-generativeai>=0.8
+huggingface_hub>=0.24
+gunicorn>=22.0

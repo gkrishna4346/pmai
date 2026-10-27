@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Paper Mind AI</title>
+<style>
+  :root{
+    --bg1:#dde9f7;
+    --bg2:#eef4fb;
+    --header1:#d2e2f5;
+    --header2:#a6c6e9;
+    --card1:#5c8bc0;
+    --card2:#4a72a8;
+    --card-dark1:#4a76ac;
+    --card-dark2:#3c6296;
+    --accent:#2f8fe0;
+    --accent-dark:#1f6fc0;
+    --navy:#132842;
+    --red:#e2382c;
+    --radius-lg:26px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    background:linear-gradient(160deg,var(--bg1),var(--bg2));
+    min-height:100vh;
+    padding:28px 18px 60px;
+    color:var(--navy);
+  }
+  .app{max-width:840px;margin:0 auto;display:flex;flex-direction:column;gap:18px;}
+
+  .hero{
+    position:relative;
+    background:linear-gradient(135deg,var(--header1),var(--header2));
+    border-radius:var(--radius-lg);
+    padding:26px 34px;
+    display:flex;align-items:center;gap:20px;
+    box-shadow:0 10px 30px rgba(60,100,150,0.18);
+  }
+  .hero .logo-icon{flex:0 0 auto;width:78px;height:78px;}
+  .hero .title-block{flex:1;}
+  .hero h1{
+    margin:0;font-size:clamp(28px,5vw,42px);font-weight:800;letter-spacing:-0.5px;
+    display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  }
+  .hero h1 .paper{color:var(--navy);}
+  .hero h1 .mind{
+    background:linear-gradient(90deg,#2f6fd0,#37b6ea);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .ai-badge{
+    background:linear-gradient(160deg,var(--accent),var(--accent-dark));
+    color:#fff;font-size:0.42em;font-weight:800;padding:4px 10px;border-radius:8px;
+    box-shadow:0 3px 8px rgba(30,90,160,0.35);
+  }
+  .tagline{margin:6px 0 0;font-size:15px;font-weight:600;color:#28425f;letter-spacing:0.2px;}
+  .tagline .dot{color:var(--accent);}
+  .refresh-btn{
+    position:absolute;top:16px;right:16px;width:38px;height:38px;border-radius:50%;
+    border:none;background:rgba(255,255,255,0.55);color:var(--navy);font-size:18px;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;transition:transform 0.35s ease, background 0.2s;
+  }
+  .refresh-btn:hover{background:rgba(255,255,255,0.85);}
+  .refresh-btn:active{transform:rotate(180deg);}
+
+  .card{
+    background:linear-gradient(160deg,var(--card1),var(--card2));
+    border-radius:20px;color:#fff;box-shadow:0 8px 22px rgba(40,80,130,0.18);
+  }
+  .row{display:flex;gap:16px;}
+  .row.two-col > *{flex:1;}
+  @media (max-width:640px){.row.two-col{flex-direction:column;}}
+
+  .desc-card{padding:20px 22px;display:flex;align-items:center;font-size:13.5px;line-height:1.55;}
+  .upload-card{padding:0;}
+  .upload-label{
+    height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+    padding:26px 16px;cursor:pointer;text-align:center;font-weight:600;font-size:15px;
+    border-radius:20px;transition:background 0.2s;
+  }
+  .upload-label:hover{background:rgba(255,255,255,0.06);}
+  .upload-label .icon{font-size:26px;}
+  .upload-card.loaded{background:linear-gradient(160deg,#4fae7a,#3c8f63);}
+  .upload-card.error{background:linear-gradient(160deg,#c85a52,#a9433c);}
+
+  .action-btn{
+    border:none;font-family:inherit;font-size:15px;font-weight:700;padding:18px 16px;
+    cursor:pointer;color:#fff;
+  }
+  .action-btn:disabled{opacity:0.55;cursor:not-allowed;}
+  .action-btn:not(:disabled):hover{filter:brightness(1.08);}
+
+  .domain-box{display:flex;align-items:center;justify-content:center;padding:18px 16px;font-size:14px;font-weight:600;text-align:center;}
+
+  .query-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+  .query-row label{font-weight:700;font-size:14.5px;color:var(--navy);white-space:nowrap;}
+  .query-input-wrap{
+    flex:1;min-width:220px;display:flex;align-items:center;
+    background:linear-gradient(160deg,var(--card1),var(--card2));
+    border-radius:20px;padding:6px 6px 6px 20px;box-shadow:0 8px 22px rgba(40,80,130,0.18);
+  }
+  .query-input-wrap input{
+    flex:1;border:none;background:transparent;outline:none;color:#fff;font-size:15px;
+    font-family:inherit;padding:10px 0;
+  }
+  .query-input-wrap input::placeholder{color:rgba(255,255,255,0.75);}
+  .query-input-wrap button{
+    width:40px;height:40px;border-radius:50%;border:none;background:rgba(255,255,255,0.18);
+    color:#fff;font-size:16px;cursor:pointer;flex:0 0 auto;
+    display:flex;align-items:center;justify-content:center;transition:background 0.2s;
+  }
+  .query-input-wrap button:not(:disabled):hover{background:rgba(255,255,255,0.32);}
+  .query-input-wrap button:disabled{opacity:0.5;cursor:not-allowed;}
+
+  .answer-card{min-height:280px;padding:22px;display:flex;}
+  .answer-inner{
+    flex:1;background:linear-gradient(160deg,var(--card-dark1),var(--card-dark2));
+    border-radius:16px;padding:26px 28px;display:flex;align-items:flex-start;
+  }
+  .answer-placeholder{margin:auto;color:rgba(255,255,255,0.85);font-size:14.5px;font-weight:500;}
+  .answer-content{font-size:14.5px;line-height:1.7;width:100%;}
+  .answer-content b{color:#fff;}
+  .answer-content ul{margin:8px 0;padding-left:20px;}
+  .answer-content li{margin-bottom:6px;}
+  .answer-domain-tag{
+    display:inline-block;font-size:11px;font-weight:700;background:rgba(255,255,255,0.18);
+    padding:3px 10px;border-radius:20px;margin-bottom:12px;letter-spacing:0.3px;
+  }
+  .spinner{
+    width:16px;height:16px;border:2.5px solid rgba(255,255,255,0.4);border-top-color:#fff;
+    border-radius:50%;display:inline-block;animation:spin 0.8s linear infinite;
+    vertical-align:middle;margin-right:8px;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <header class="hero">
+    <svg class="logo-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <rect x="18" y="10" width="46" height="60" rx="6" fill="#fbfdff"/>
+      <path d="M52 10 L64 22 L52 22 Z" fill="#d7e6f5"/>
+      <rect x="26" y="34" width="26" height="3" rx="1.5" fill="#c3d6ea"/>
+      <rect x="26" y="42" width="26" height="3" rx="1.5" fill="#c3d6ea"/>
+      <rect x="26" y="50" width="18" height="3" rx="1.5" fill="#c3d6ea"/>
+      <rect x="10" y="14" width="26" height="15" rx="3" fill="var(--red)"/>
+      <text x="23" y="25" font-family="Arial,Helvetica,sans-serif" font-size="9" font-weight="800" fill="#fff" text-anchor="middle">PDF</text>
+      <circle cx="63" cy="58" r="21" fill="#123a63"/>
+      <circle cx="63" cy="58" r="16.5" fill="#1f6fc0"/>
+      <circle cx="63" cy="58" r="13" fill="#0f2d4d"/>
+      <circle cx="57.5" cy="55" r="2.6" fill="#6fe3ff"/>
+      <circle cx="68.5" cy="55" r="2.6" fill="#6fe3ff"/>
+      <path d="M55 63 q4 4 8 0" stroke="#6fe3ff" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+      <rect x="76" y="72" width="9" height="22" rx="4" transform="rotate(45 76 72)" fill="#123a63"/>
+    </svg>
+    <div class="title-block">
+      <h1><span class="paper">Paper</span> <span class="mind">Mind</span> <span class="ai-badge">AI</span></h1>
+      <p class="tagline">Read<span class="dot">.</span> Understand<span class="dot">.</span> Ask<span class="dot">.</span> Instantly<span class="dot">.</span></p>
+    </div>
+    <button class="refresh-btn" title="Reset to initial stage" onclick="location.reload()">&#8635;</button>
+  </header>
+
+  <section class="row two-col">
+    <div class="card desc-card">
+      This tool is an intelligent PDF Reader &amp; Q&amp;A assistant that converts uploaded PDFs into a searchable knowledge base. It delivers fast, accurate, and context-aware answers based exclusively on the uploaded document, and automatically identifies which domain the document relates to.
+    </div>
+    <div class="card upload-card" id="uploadCard">
+      <input type="file" id="fileInput" accept="application/pdf" hidden />
+      <label for="fileInput" class="upload-label" id="uploadLabel">
+        <span class="icon">&#128196;</span>
+        <span id="uploadText">Upload your PDF<br/>Document Here</span>
+      </label>
+    </div>
+  </section>
+
+  <section class="row two-col">
+    <button class="card action-btn" id="buildKbBtn" disabled>&#128269; Build Knowledge Base</button>
+    <div class="card domain-box" id="domainBox">&#10024; Identified domain name appears here</div>
+  </section>
+
+  <section class="query-row">
+    <label for="queryInput">User Query :</label>
+    <div class="query-input-wrap">
+      <input type="text" id="queryInput" placeholder="Enter your query here...." disabled />
+      <button id="sendBtn" disabled title="Ask">&#10148;</button>
+    </div>
+  </section>
+
+  <section class="card answer-card">
+    <div class="answer-inner">
+      <div id="answerContent" class="answer-placeholder">Answers extracted by Paper Mind will appear here</div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+const fileInput = document.getElementById('fileInput');
+const uploadCard = document.getElementById('uploadCard');
+const uploadText = document.getElementById('uploadText');
+const buildKbBtn = document.getElementById('buildKbBtn');
+const domainBox = document.getElementById('domainBox');
+const queryInput = document.getElementById('queryInput');
+const sendBtn = document.getElementById('sendBtn');
+const answerContent = document.getElementById('answerContent');
+
+let fullText = '';
+let currentDomain = '';
+let kbReady = false;
+
+function escapeHtml(s){
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function renderMarkdownLite(md){
+  const lines = escapeHtml(md).split('\n');
+  let html = '';
+  let inList = false;
+  lines.forEach(line => {
+    const trimmed = line.trim();
+    if(/^[-•]\s+/.test(trimmed)){
+      if(!inList){ html += '<ul>'; inList = true; }
+      html += '<li>' + trimmed.replace(/^[-•]\s+/, '') + '</li>';
+    } else {
+      if(inList){ html += '</ul>'; inList = false; }
+      if(trimmed.length){ html += '<p>' + trimmed + '</p>'; }
+    }
+  });
+  if(inList) html += '</ul>';
+  html = html.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+  return html;
+}
+
+// ---------- Upload ----------
+fileInput.addEventListener('change', async () => {
+  const file = fileInput.files[0];
+  if(!file) return;
+  uploadText.innerHTML = '<span class="spinner"></span>Reading PDF&hellip;';
+  uploadCard.classList.remove('loaded','error');
+
+  const formData = new FormData();
+  formData.append('file', file);
+
+  try{
+    const res = await fetch('/api/extract', { method: 'POST', body: formData });
+    const data = await res.json();
+    if(!res.ok) throw new Error(data.error || 'Could not read this file.');
+
+    fullText = data.text;
+    uploadText.innerHTML = '&#9989; ' + escapeHtml(file.name);
+    uploadCard.classList.add('loaded');
+    buildKbBtn.disabled = false;
+    kbReady = false;
+    queryInput.disabled = true;
+    sendBtn.disabled = true;
+    domainBox.innerHTML = '&#10024; Identified domain name appears here';
+    answerContent.className = 'answer-placeholder';
+    answerContent.innerHTML = 'Answers extracted by Paper Mind will appear here';
+  } catch(err){
+    uploadCard.classList.add('error');
+    uploadText.innerHTML = '&#9888; ' + escapeHtml(err.message || 'Could not read this file. Try another PDF.');
+    buildKbBtn.disabled = true;
+  }
+});
+
+// ---------- Build knowledge base ----------
+buildKbBtn.addEventListener('click', async () => {
+  if(!fullText) return;
+  buildKbBtn.disabled = true;
+  buildKbBtn.innerHTML = '<span class="spinner"></span>Analyzing document&hellip;';
+  domainBox.innerHTML = '<span class="spinner"></span>Identifying domain&hellip;';
+
+  try{
+    const res = await fetch('/api/build-kb', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: fullText })
+    });
+    const data = await res.json();
+    if(!res.ok) throw new Error(data.error || 'Could not identify domain.');
+
+    currentDomain = data.domain;
+    domainBox.innerHTML = '&#10024; <b>' + escapeHtml(currentDomain) + '</b>';
+    kbReady = true;
+    buildKbBtn.innerHTML = '&#9989; Knowledge Base Ready';
+    queryInput.disabled = false;
+    sendBtn.disabled = false;
+    queryInput.focus();
+  } catch(err){
+    domainBox.innerHTML = '&#9888; ' + escapeHtml(err.message || 'Could not identify domain.');
+    buildKbBtn.disabled = false;
+    buildKbBtn.innerHTML = '&#128269; Build Knowledge Base';
+  }
+});
+
+// ---------- Query ----------
+async function handleQuery(){
+  const q = queryInput.value.trim();
+  if(!q || !kbReady) return;
+
+  sendBtn.disabled = true;
+  queryInput.disabled = true;
+  answerContent.className = 'answer-content';
+  answerContent.innerHTML = '<span class="spinner"></span>Searching the document&hellip;';
+
+  try{
+    const res = await fetch('/api/query', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: fullText, query: q, domain: currentDomain })
+    });
+    const data = await res.json();
+    if(!res.ok) throw new Error(data.error || 'Something went wrong.');
+
+    if(data.found === false){
+      answerContent.className = 'answer-placeholder';
+      answerContent.innerHTML = escapeHtml(data.message);
+    } else {
+      let html = '';
+      if(currentDomain) html += '<span class="answer-domain-tag">' + escapeHtml(currentDomain) + '</span><br/>';
+      html += renderMarkdownLite(data.answer);
+      answerContent.className = 'answer-content';
+      answerContent.innerHTML = html;
+    }
+  } catch(err){
+    answerContent.className = 'answer-placeholder';
+    answerContent.innerHTML = escapeHtml(err.message || 'Something went wrong while fetching the answer.');
+  } finally {
+    sendBtn.disabled = false;
+    queryInput.disabled = false;
+    queryInput.focus();
+  }
+}
+
+sendBtn.addEventListener('click', handleQuery);
+queryInput.addEventListener('keydown', (e) => { if(e.key === 'Enter') handleQuery(); });
+</script>
+
+</body>
+</html>
