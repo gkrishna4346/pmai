@@ -17,18 +17,18 @@ services:
       - key: GROQ_API_KEY
         sync: false
       - key: GROQ_MODEL
-        value: llama-3.3-70b-versatile
-      - key: SAMBANOVA_API_KEY
-        sync: false
-      - key: SAMBANOVA_MODEL
-        value: Meta-Llama-3.3-70B-Instruct
-      - key: HF_API_KEY
-        sync: false
-      - key: HF_MODEL
-        value: meta-llama/Llama-3.3-70B-Instruct
-      - key: ANTHROPIC_API_KEY
-        sync: false
-      - key: ANTHROPIC_MODEL
-        value: claude-sonnet-5
-      - key: PROVIDER_ORDER
-        sync: false
+        value: openai/gpt-oss-120b
+#      - key: SAMBANOVA_API_KEY
+#        sync: false
+#      - key: SAMBANOVA_MODEL
+#        value: Meta-Llama-3.3-70B-Instruct
+#      - key: HF_API_KEY
+#        sync: false
+#     - key: HF_MODEL
+#        value: meta-llama/Llama-3.3-70B-Instruct
+#      - key: ANTHROPIC_API_KEY
+#        sync: false
+#      - key: ANTHROPIC_MODEL
+#        value: claude-sonnet-5
+#      - key: PROVIDER_ORDER
+#        sync: false
